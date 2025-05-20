@@ -1,30 +1,14 @@
-# Maven Build Pipeline for Java Project
-
-trigger:
-- main
-
-# Use 'ubuntu-latest' for Microsoft-hosted agent,
-# or keep 'name: default' for your self-hosted agent pool.
-pool:
-  name: default
-  # Uncomment below if switching to Microsoft-hosted agent
-  # vmImage: 'ubuntu-latest'
-
 steps:
-# Install JDK 11 if needed and set JAVA_HOME
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '11'
-    jdkArchitecture: 'x64'
-    jdkSourceOption: 'PreInstalled' # Use 'AzureStorage' or 'LocalDirectory' if needed
+- script: |
+    echo "##vso[task.setvariable variable=JAVA_HOME]/path/to/your/jdk11"
+  displayName: 'Set JAVA_HOME manually'
 
-# Run Maven build using the JDK from JavaToolInstaller
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'Path'
-    jdkDirectory: '$(JAVA_HOME)'  # Uses JAVA_HOME set by JavaToolInstaller
+    jdkDirectory: '$(JAVA_HOME)'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
